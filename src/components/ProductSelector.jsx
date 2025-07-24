@@ -151,25 +151,29 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
             {/* 添加数量输入框 */}
             {selectedProduct && (
                 <div className="quantity-wrapper">
-                    <span className="label">数量:</span>
-                    <input
-                        type="number"
-                        min="1"
-                        value={quantity}
-                        onChange={handleQuantityChange}
-                        className="quantity-input"
-                    />
-                    <span className="subtotal">小计: <span className="price">¥{(selectedProduct.price * quantity).toFixed(2)}</span></span>
-                    <button 
-                        type="button" 
-                        className="clear-button"
-                        onClick={() => {
-                            setSearchTerm('');
-                            onSelect(type.id, null);
-                        }}
-                    >
-                        删除
-                    </button>
+                    <div className="quantity-row">
+                        <span className="label">数量:</span>
+                        <input
+                            type="number"
+                            min="1"
+                            value={quantity}
+                            onChange={handleQuantityChange}
+                            className="quantity-input"
+                        />
+                        <button 
+                            type="button" 
+                            className="clear-button"
+                            onClick={() => {
+                                setSearchTerm('');
+                                onSelect(type.id, null);
+                            }}
+                        >
+                            删除
+                        </button>
+                    </div>
+                    <div className="subtotal-row">
+                        <span className="subtotal">小计: <span className="price">¥{(selectedProduct.price * quantity).toFixed(2)}</span></span>
+                    </div>
                 </div>
             )}
             
@@ -189,6 +193,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                 .select-wrapper {
                     position: relative;
                     width: 100%;
+                    min-height: 42px;
                 }
                 
                 .search-input {
@@ -200,6 +205,9 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     transition: all 0.2s ease;
                     box-sizing: border-box;
                     background-color: white;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 
                 .search-input:focus {
@@ -243,6 +251,9 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     border-bottom: 1px solid #f3f4f6;
                     font-size: 14px;
                     color: #374151;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
                 
                 .dropdown-item:last-child {
@@ -268,9 +279,20 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                 
                 .quantity-wrapper {
                     display: flex;
-                    align-items: center;
+                    flex-direction: column;
                     margin-top: 10px;
+                    gap: 8px;
+                }
+                
+                .quantity-row {
+                    display: flex;
+                    align-items: center;
                     gap: 10px;
+                }
+                
+                .subtotal-row {
+                    display: flex;
+                    justify-content: flex-end;
                 }
                 
                 .label {
