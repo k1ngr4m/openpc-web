@@ -18,17 +18,17 @@
 .product-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .product-selector {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
 }
 
 .product-name {
-  width: 100px;
+  width: 80px;
   font-weight: bold;
   color: #555;
 }
@@ -36,7 +36,7 @@
 .select-wrapper {
   flex: 1;
   position: relative;
-  width: 500px;
+  width: 400px;
 }
 
 .select-wrapper select {
@@ -75,8 +75,8 @@
 }
 
 .total-price {
-  margin-top: 30px;
-  padding-top: 15px;
+  margin-top: 20px;
+  padding-top: 10px;
   border-top: 1px solid #eee;
   display: flex;
   justify-content: flex-end;
@@ -136,8 +136,8 @@
 }
 
 .summary {
-  margin-top: 30px;
-  padding-top: 15px;
+  margin-top: 20px;
+  padding-top: 10px;
   border-top: 1px solid #eee;
 }
 
@@ -146,7 +146,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .discount-row .label {
