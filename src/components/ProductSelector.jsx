@@ -138,7 +138,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                                 className={`dropdown-item ${selectedProduct?.sku_name === product.sku_name ? 'selected' : ''}`}
                                 onClick={() => handleProductSelect(product)}
                             >
-                                {product.sku_name} - ¥{product.price.toFixed(2)}
+                                {product.sku_name} - <span className="price">¥{product.price.toFixed(2)}</span>
                             </div>
                         ))}
                         {!loading && filteredProducts.length === 0 && searchTerm && (
@@ -159,7 +159,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                         onChange={handleQuantityChange}
                         className="quantity-input"
                     />
-                    <span className="subtotal">小计: ¥{(selectedProduct.price * quantity).toFixed(2)}</span>
+                    <span className="subtotal">小计: <span className="price">¥{(selectedProduct.price * quantity).toFixed(2)}</span></span>
                     <button 
                         type="button" 
                         className="clear-button"
@@ -315,6 +315,11 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                 
                 .clear-button:hover {
                     background-color: #ef4444;
+                }
+                
+                .price {
+                    color: #ef4444;
+                    font-weight: 600;
                 }
             `}</style>
         </div>
