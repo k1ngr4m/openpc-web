@@ -6,6 +6,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
+    const [discountRate, setDiscountRate] = useState(0); // 折扣率状态（但不用于单个商品）
     const [isOpen, setIsOpen] = useState(false);
 
     const fetchProducts = async () => {
@@ -81,6 +82,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
         }
     };
 
+
     const handleFocus = () => {
         setIsOpen(true);
         setSearchTerm('');
@@ -115,64 +117,71 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
 
     return (
         <div className="product-selector">
-            <div className="product-name">{type.name}</div>
-            <div className={`select-wrapper ${isOpen ? 'open' : ''}`}>
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    placeholder={selectedProduct ? selectedProduct.sku_name : `请选择${type.name}`}
-                    className={`search-input ${loading ? 'loading' : ''}`}
-                />
-                <div className="search-icon">
-                    <i className="fa fa-search"></i>
-                </div>
-                {isOpen && (
-                    <div className="dropdown-list">
-                        {loading && <div className="dropdown-item disabled">加载中...</div>}
-                        {!loading && filteredProducts.map((product) => (
-                            <div 
-                                key={product.sku_name} 
-                                className={`dropdown-item ${selectedProduct?.sku_name === product.sku_name ? 'selected' : ''}`}
-                                onClick={() => handleProductSelect(product)}
-                            >
-                                {product.sku_name} - <span className="price">¥{product.price.toFixed(2)}</span>
-                            </div>
-                        ))}
-                        {!loading && filteredProducts.length === 0 && searchTerm && (
-                            <div className="dropdown-item disabled">无匹配结果</div>
-                        )}
+            <div className="selector-row">
+                <div className="product-name">{type.name}</div>
+                <div className={`select-wrapper ${isOpen ? 'open' : ''}`}>
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={handleInputChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        placeholder={selectedProduct ? selectedProduct.sku_name : `请选择${type.name}`}
+                        className={`search-input ${loading ? 'loading' : ''}`}
+                    />
+                    <div className="search-icon">
+                        <i className="fa fa-search"></i>
                     </div>
-                )}
+                    {isOpen && (
+                        <div className="dropdown-list">
+                            {loading && <div className="dropdown-item disabled">加载中...</div>}
+                            {!loading && filteredProducts.map((product) => (
+                                <div 
+                                    key={product.sku_name} 
+                                    className={`dropdown-item ${selectedProduct?.sku_name === product.sku_name ? 'selected' : ''}`}
+                                    onClick={() => handleProductSelect(product)}
+                                >
+                                    {product.sku_name} - <span className="price">¥{product.price.toFixed(2)}</span>
+                                </div>
+                            ))}
+                            {!loading && filteredProducts.length === 0 && searchTerm && (
+                                <div className="dropdown-item disabled">无匹配结果</div>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* 添加数量输入框 */}
             {selectedProduct && (
-                <div className="quantity-wrapper">
-                    <div className="quantity-row">
-                        <span className="label">数量:</span>
-                        <input
-                            type="number"
-                            min="1"
-                            value={quantity}
-                            onChange={handleQuantityChange}
-                            className="quantity-input"
-                        />
-                        <button 
-                            type="button" 
-                            className="clear-button"
-                            onClick={() => {
-                                setSearchTerm('');
-                                onSelect(type.id, null);
-                            }}
-                        >
-                            删除
-                        </button>
-                    </div>
-                    <div className="subtotal-row">
-                        <span className="subtotal">小计: <span className="price">¥{(selectedProduct.price * quantity).toFixed(2)}</span></span>
+                <div className="details-wrapper">
+                    <div className="details-row">
+                        <div className="detail-item">
+                            <span className="label">数量:</span>
+                            <input
+                                type="number"
+                                min="1"
+                                value={quantity}
+                                onChange={handleQuantityChange}
+                                className="detail-input"
+                            />
+                        </div>
+                        <div className="detail-item">
+                            <span className="label">小计:</span>
+                            <span className="price">¥{(selectedProduct.price * quantity).toFixed(2)}</span>
+                        </div>
+                        <div className="detail-item">
+                            <button 
+                                type="button" 
+                                className="delete-button"
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    onSelect(type.id, null);
+                                }}
+                            >
+                                删除
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -183,16 +192,23 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
                 }
                 
+                .selector-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                }
+                
                 .product-name {
+                    width: 100px;
                     font-weight: 600;
-                    margin-bottom: 8px;
                     color: #333;
-                    font-size: 14px;
+                    font-size: 15px;
+                    flex-shrink: 0;
                 }
                 
                 .select-wrapper {
+                    flex: 1;
                     position: relative;
-                    width: 100%;
                     min-height: 42px;
                 }
                 
@@ -279,71 +295,74 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     font-style: italic;
                 }
                 
-                .quantity-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    margin-top: 10px;
-                    gap: 8px;
+                .details-wrapper {
+                    margin-top: 12px;
+                    padding: 12px;
+                    background-color: #f8f9fa;
+                    border-radius: 6px;
                 }
                 
-                .quantity-row {
+                .details-row {
                     display: flex;
                     align-items: center;
-                    gap: 10px;
-                }
-                
-                .subtotal-row {
-                    display: flex;
+                    gap: 15px;
                     justify-content: flex-end;
                 }
                 
+                .detail-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                
                 .label {
-                    font-size: 14px;
+                    font-size: 13px;
                     color: #374151;
                     font-weight: 500;
                 }
                 
-                .quantity-input {
-                    width: 80px;
+                .detail-input {
+                    width: 60px;
                     padding: 6px 8px;
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
-                    font-size: 14px;
+                    font-size: 13px;
                     text-align: center;
                 }
                 
-                .quantity-input:focus {
+                .detail-input:focus {
                     outline: none;
                     border-color: #3b82f6;
                     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
                 }
                 
-                .subtotal {
-                    margin-left: auto;
+                .price {
+                    color: #ef4444;
                     font-weight: 600;
-                    color: #1f2937;
-                    font-size: 14px;
+                    min-width: 70px;
+                    text-align: right;
+                    font-size: 13px;
                 }
                 
-                .clear-button {
-                    margin-left: 10px;
+                .percent {
+                    font-size: 13px;
+                    color: #374151;
+                    font-weight: 500;
+                }
+                
+                .delete-button {
                     padding: 6px 12px;
                     background-color: #f87171;
                     color: white;
                     border: none;
                     border-radius: 4px;
-                    font-size: 14px;
+                    font-size: 13px;
                     cursor: pointer;
                     transition: background-color 0.2s ease;
                 }
                 
-                .clear-button:hover {
+                .delete-button:hover {
                     background-color: #ef4444;
-                }
-                
-                .price {
-                    color: #ef4444;
-                    font-weight: 600;
                 }
             `}</style>
         </div>

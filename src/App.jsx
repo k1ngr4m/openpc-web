@@ -18,6 +18,7 @@ const App = () => {
     // 修改selectedProducts状态结构，增加quantity字段
     const [selectedProducts, setSelectedProducts] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
+    const [discountRate, setDiscountRate] = useState(0); // 添加总体折扣率状态
 
     // 更新产品选择处理函数
     const handleProductSelect = (typeId, product, quantity = 1) => {
@@ -43,12 +44,19 @@ const App = () => {
         }
     };
 
-    // 计算总价时考虑数量因素
+    // 计算总价时考虑数量和折扣率因素
     useEffect(() => {
         const sum = Object.values(selectedProducts)
             .reduce((acc, product) => acc + (product?.price || 0) * (product?.quantity || 0), 0);
-        setTotalPrice(sum);
-    }, [selectedProducts]);
+        const discountedPrice = sum * (1 - discountRate / 100);
+        setTotalPrice(discountedPrice);
+    }, [selectedProducts, discountRate]);
+
+    // 添加折扣率变化处理函数
+    const handleDiscountChange = (e) => {
+        const value = parseFloat(e.target.value) || 0;
+        setDiscountRate(Math.min(Math.max(value, 0), 100)); // 限制在0-100之间
+    };
 
     return (
         <div className="app-container">
@@ -67,9 +75,24 @@ const App = () => {
                         />
                     ))}
                 </div>
-                <div className="total-price">
-                    <span className="label">总价:</span>
-                    <span className="price">¥{totalPrice.toFixed(2)}</span>
+                <div className="summary">
+                    <div className="discount-row">
+                        <span className="label">总体折扣率:</span>
+                        <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            value={discountRate}
+                            onChange={handleDiscountChange}
+                            className="discount-input"
+                        />
+                        <span className="percent">%</span>
+                    </div>
+                    <div className="total-price">
+                        <span className="label">总价:</span>
+                        <span className="price">¥{totalPrice.toFixed(2)}</span>
+                    </div>
                 </div>
             </main>
         </div>
