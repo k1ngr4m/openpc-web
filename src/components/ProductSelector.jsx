@@ -242,6 +242,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     max-height: 800px;
                     overflow-y: auto;
                     z-index: 100;
+                    min-width: 100%;
                 }
                 
                 .dropdown-item {
@@ -251,9 +252,10 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     border-bottom: 1px solid #f3f4f6;
                     font-size: 14px;
                     color: #374151;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    white-space: normal;
+                    word-break: break-word;
+                    line-height: 1.4;
+                    max-width: 100%;
                 }
                 
                 .dropdown-item:last-child {
