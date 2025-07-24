@@ -7,7 +7,6 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [isOpen, setIsOpen] = useState(false);
-    const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -71,21 +70,6 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
             setQuantity(1);
         }
     }, [selectedProduct]);
-
-    const handleChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-
-        if (!value) {
-            onSelect(type.id, null);
-            return;
-        }
-
-        const selected = products.find(p => p.sku_name === value);
-        if (selected) {
-            onSelect(type.id, selected, quantity);
-        }
-    };
 
     const handleQuantityChange = (e) => {
         const value = e.target.value;
@@ -176,6 +160,16 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                         className="quantity-input"
                     />
                     <span className="subtotal">小计: ¥{(selectedProduct.price * quantity).toFixed(2)}</span>
+                    <button 
+                        type="button" 
+                        className="clear-button"
+                        onClick={() => {
+                            setSearchTerm('');
+                            onSelect(type.id, null);
+                        }}
+                    >
+                        删除
+                    </button>
                 </div>
             )}
             
@@ -237,7 +231,7 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     border-top: none;
                     border-radius: 0 0 6px 6px;
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                    max-height: 200px;
+                    max-height: 800px;
                     overflow-y: auto;
                     z-index: 100;
                 }
@@ -305,6 +299,22 @@ const ProductSelector = ({ type, onSelect, onQuantityChange, selectedProduct }) 
                     font-weight: 600;
                     color: #1f2937;
                     font-size: 14px;
+                }
+                
+                .clear-button {
+                    margin-left: 10px;
+                    padding: 6px 12px;
+                    background-color: #f87171;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                }
+                
+                .clear-button:hover {
+                    background-color: #ef4444;
                 }
             `}</style>
         </div>
